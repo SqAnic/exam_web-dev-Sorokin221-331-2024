@@ -15,3 +15,7 @@ UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'media'
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+ADMIN_ROLE_ID = 1
+MODERATOR_ROLE_ID =2 
+USER_ROLE_ID = 3

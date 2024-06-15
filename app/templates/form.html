@@ -1,4 +1,5 @@
-{% macro form(book, current_user, genres)%}
+{% macro form(book, current_user, genres) %}
+
 <form method="POST" enctype="multipart/form-data">
     <div class="container mb-3">
         <div class="mb-3">
@@ -14,8 +15,8 @@
             </select>    
         </div>
         <div class="form-group">
-            <label for="short_desc">Описание книги</label>
-            <textarea class="form-control" id="short_desc" name="short_desc">{{ book.description }}</textarea>
+            <label for="book_short_desc">Описание книги</label>
+            <textarea class="form-control" id="book_short_desc" name="short_desc">{{ book.description }}</textarea>
         </div>      
         <div class="mb-3">
             <label for="InputYear" class="form-label">Год</label>
@@ -49,7 +50,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.css">
 
 <script>
-    var easyMDE = new EasyMDE({ element: document.getElementById('short_desc') });
+    var easyMDE = new EasyMDE({ element: document.getElementById('book_short_desc') });
 </script>
 
 {% endmacro %}

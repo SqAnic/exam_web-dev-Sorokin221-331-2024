@@ -15,21 +15,18 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="short_desc">Текст рецензии</label>
-            <textarea class="form-control" id="textarea_review" name="short_desc" rows="5" required></textarea>
+            <label for="review_text">Текст рецензии</label>
+            <textarea class="form-control" id="review_text" name="text" rows="5" autofocus="autofocus" required>Запиши сюда что-то</textarea>
         </div>
         <button type="submit" class="btn btn-primary">Добавить рецензию</button>
     </form>
-
-    <script src="https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.css">
-
-    <script>
-        var easyMDE = new EasyMDE({ 
-            element: document.getElementById('textarea_review'),
-        });
-    </script>
-    
 </div>
-{% endblock %}
 
+<script src="https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.css">
+
+<script>
+    var easyMDE = new EasyMDE({ element: document.getElementById('review_text') });
+</script>
+
+{% endblock %}

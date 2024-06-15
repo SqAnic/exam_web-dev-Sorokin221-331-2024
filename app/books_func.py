@@ -4,6 +4,7 @@ from models import db, Book, Genre, Cover, Review
 from tools import ImageSaver
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from markdown2 import markdown
+from auth import checkRole
 import bleach
 import os
 from configure import UPLOAD_FOLDER
@@ -19,6 +20,7 @@ ALLOWED_ATTRIBUTES = {
 
 @bp.route('/create_book', methods=['GET', 'POST'])
 @login_required
+@checkRole('create_book')
 def create_book():
     genres = db.session.execute(db.select(Genre)).scalars()
     book = Book()
@@ -66,6 +68,7 @@ def create_book():
 
 @bp.route('/edit_book/<int:book_id>', methods=['GET', 'POST'])
 @login_required
+@checkRole('edit_book')
 def edit_book(book_id):
     book = db.session.query(Book).filter_by(id=book_id).first()
     genres = db.session.execute(db.select(Genre)).scalars()
@@ -102,6 +105,7 @@ def edit_book(book_id):
 
 @bp.route('/delete_book/<int:book_id>', methods=["POST"])
 @login_required
+@checkRole('delete_book')
 def delete_book(book_id):
     book = db.session.query(Book).filter_by(id=book_id).first()
     if book is None:
@@ -109,14 +113,20 @@ def delete_book(book_id):
         return redirect(url_for('index'))
 
     try:
-        cover = db.session.query(Cover).filter_by(id=book.cover_id).first()
+        cover_id = book.cover_id
         db.session.delete(book)
         db.session.commit()
 
+        # Проверка на наличие других книг с этой обложкой
+        cover = db.session.query(Cover).filter_by(id=cover_id).first()
         if cover:
-            file_path = os.path.join(UPLOAD_FOLDER, cover.md5_hash + '.' + cover.filename.split('.')[-1])
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            related_books = db.session.query(Book).filter_by(cover_id=cover.id).count()
+            if related_books == 0:
+                file_path = os.path.join(UPLOAD_FOLDER, cover.storage_filename)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                db.session.delete(cover)
+                db.session.commit()
 
         flash(f'Книга "{book.title}" была успешно удалена!', 'success')
 
@@ -137,6 +147,9 @@ def show_book(book_id):
     books_with_genres_cover = {
         'id': book.id,
         'title': book.title,
+        'author': book.author,
+        'publisher': book.publisher,
+        'pages': book.pages,
         'description': Markup(book.description),
         'year': book.year,
         'genres': [genre.name for genre in book.genres],

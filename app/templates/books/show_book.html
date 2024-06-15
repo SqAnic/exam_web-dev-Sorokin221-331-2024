@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='show_book.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-4">
             {% if book.cover %}
-            <img class="img-fluid" src="{{ book.cover }}" alt="{{ book.title }} cover">
+            <img class="img-fluid fixed-size" src="{{ book.cover }}" alt="{{ book.title }} cover">
             {% else %}
             <p>Обложка отсутствует</p>
             {% endif %}
@@ -15,8 +19,11 @@
             <div class="description">
                 {{ book.description | safe }}  <!-- Используйте фильтр safe для отображения HTML -->
             </div>
+            <p><strong>Автор:</strong> {{ book.author }}</p>
             <p><strong>Год издания:</strong> {{ book.year }}</p>
             <p><strong>Жанры:</strong> {{ book.genres | join(', ') }}</p>
+            <p><strong>Издательсвто:</strong> {{ book.publisher }}</p>
+            <p><strong>Кол-во страниц:</strong> {{ book.pages }}</p>
             <hr>
             {% if current_user.is_authenticated %}
                 {% if user_review %}
@@ -31,9 +38,9 @@
             {% endif %}
         </div>
     </div>
-    <div class="row mt-5">
+    <div class="row mt-2">
         <div class="col-md-12">
-            <h3 class="mt-5">Рецензии пользователей:</h3>
+            <h3 class="my-3">Рецензии пользователей:</h3>
             <div class="list-group">
                 {% for comment in reviews %}
                 <div class="list-group-item mb-3">

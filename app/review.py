@@ -20,10 +20,10 @@ ALLOWED_ATTRIBUTES = {
 @bp.route('/make_review/<int:book_id>', methods=['GET', 'POST'])
 @login_required
 def make_review(book_id):
-    
+
     if request.method == "POST":
         review = request.form.get('review')
-        description_md = request.form.get('short_desc')
+        description_md = request.form.get('text')
 
         description_html = bleach.clean(markdown(description_md), tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES)
 
